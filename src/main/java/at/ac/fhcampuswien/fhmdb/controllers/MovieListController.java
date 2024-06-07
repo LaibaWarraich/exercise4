@@ -4,6 +4,7 @@ import at.ac.fhcampuswien.fhmdb.ClickEventHandler;
 import at.ac.fhcampuswien.fhmdb.api.MovieAPI;
 import at.ac.fhcampuswien.fhmdb.api.MovieApiException;
 import at.ac.fhcampuswien.fhmdb.database.*;
+import at.ac.fhcampuswien.fhmdb.observer.Observer;
 import at.ac.fhcampuswien.fhmdb.models.Genre;
 import at.ac.fhcampuswien.fhmdb.models.Movie;
 import at.ac.fhcampuswien.fhmdb.models.SortState;
@@ -26,7 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
-public class MovieListController implements Initializable {
+public class MovieListController implements Initializable, Observer {
     @FXML
     public JFXButton searchBtn;
 
@@ -63,6 +64,7 @@ public class MovieListController implements Initializable {
                     movie.getId());
             try {
                 WatchlistRepository repository = new WatchlistRepository();
+                repository.addObserver(this); // Add observer
                 repository.addToWatchlist(watchlistMovieEntity);
             } catch (DataBaseException e) {
                 UserDialog dialog = new UserDialog("Database Error", "Could not add movie to watchlist");
@@ -77,6 +79,12 @@ public class MovieListController implements Initializable {
         initializeState();
         initializeLayout();
         sortState = ascendingState;
+    }
+
+    @Override
+    public void update(String message) {
+        UserDialog dialog = new UserDialog("Watchlist Update", message);
+        dialog.show();
     }
 
     public void initializeState() {
@@ -159,25 +167,6 @@ public class MovieListController implements Initializable {
         observableMovies.clear();
         observableMovies.addAll(movies);
     }
-   /* public void sortMovies(){
-        if (sortedState == SortedState.NONE || sortedState == SortedState.DESCENDING) {
-            sortMovies(SortedState.ASCENDING);
-        } else if (sortedState == SortedState.ASCENDING) {
-            sortMovies(SortedState.DESCENDING);
-        }
-    }*/
-    // sort movies based on sortedState
-    // by default sorted state is NONE
-    // afterwards it switches between ascending and descending
-   /* public void sortMovies(SortedState sortDirection) {
-        if (sortDirection == SortedState.ASCENDING) {
-            observableMovies.sort(Comparator.comparing(Movie::getTitle));
-            sortedState = SortedState.ASCENDING;
-        } else {
-            observableMovies.sort(Comparator.comparing(Movie::getTitle).reversed());
-            sortedState = SortedState.DESCENDING;
-        }
-    }*/
 
     public List<Movie> filterByQuery(List<Movie> movies, String query){
         if(query == null || query.isEmpty()) return movies;

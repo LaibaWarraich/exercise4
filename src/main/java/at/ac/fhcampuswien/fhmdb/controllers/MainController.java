@@ -1,6 +1,7 @@
 package at.ac.fhcampuswien.fhmdb.controllers;
 
 import at.ac.fhcampuswien.fhmdb.enums.UIComponent;
+import at.ac.fhcampuswien.fhmdb.observer.Observer;
 import at.ac.fhcampuswien.fhmdb.models.Movie;
 import com.jfoenix.controls.*;
 import com.jfoenix.transitions.hamburger.HamburgerBasicCloseTransition;
@@ -15,7 +16,7 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-public class MainController {
+public class MainController implements Observer {
     @FXML
     public JFXHamburger hamburgerMenu;
 
@@ -75,6 +76,11 @@ public class MainController {
         if(!isMenuCollapsed){
             toggleMenuDrawer();
         }
+    }
+
+    @Override
+    public void update(String message) {
+        System.out.println("MainController received update: " + message);
     }
 
     // count which actor is in the most movies
