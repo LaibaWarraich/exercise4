@@ -63,7 +63,7 @@ public class MovieListController implements Initializable, Observer {
             WatchlistMovieEntity watchlistMovieEntity = new WatchlistMovieEntity(
                     movie.getId());
             try {
-                WatchlistRepository repository = new WatchlistRepository();
+                WatchlistRepository repository = WatchlistRepository.getInstance();
                 repository.addObserver(this); // Add observer
                 repository.addToWatchlist(watchlistMovieEntity);
             } catch (DataBaseException e) {
@@ -105,7 +105,7 @@ public class MovieListController implements Initializable, Observer {
 
     private List<Movie> readCache() {
         try {
-            MovieRepository movieRepository = new MovieRepository();
+            MovieRepository movieRepository = MovieRepository.getInstance();
             return MovieEntity.toMovies(movieRepository.getAllMovies());
         } catch (DataBaseException e) {
             UserDialog dialog = new UserDialog("DB Error", "Could not load movies from DB");
@@ -117,7 +117,7 @@ public class MovieListController implements Initializable, Observer {
     private void writeCache(List<Movie> movies) {
         try {
             // cache movies in db
-            MovieRepository movieRepository = new MovieRepository();
+            MovieRepository movieRepository = MovieRepository.getInstance();
             movieRepository.removeAll();
             movieRepository.addAllMovies(movies);
 

@@ -30,7 +30,7 @@ public class WatchlistController implements Initializable, Observer {
             MovieEntity movieEntity = (MovieEntity) o;
 
             try {
-                WatchlistRepository watchlistRepository = new WatchlistRepository();
+                WatchlistRepository watchlistRepository = WatchlistRepository.getInstance();
                 watchlistRepository.removeObserver(this); // Remove observer
                 watchlistRepository.removeFromWatchlist(movieEntity.getApiId());
                 observableWatchlist.remove(movieEntity);
@@ -46,11 +46,11 @@ public class WatchlistController implements Initializable, Observer {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         List<WatchlistMovieEntity> watchlist = new ArrayList<>();
         try {
-            watchlistRepository = new WatchlistRepository();
+            watchlistRepository = WatchlistRepository.getInstance();
             watchlistRepository.addObserver(this); // Add observer
             watchlist = watchlistRepository.getWatchlist();
 
-            MovieRepository movieRepository = new MovieRepository();
+            MovieRepository movieRepository = MovieRepository.getInstance();
             List<MovieEntity> movies = new ArrayList<>();
 
             for(WatchlistMovieEntity movie : watchlist) {
